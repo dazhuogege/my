@@ -5,7 +5,7 @@ const moment = require('moment'); // 引入 moment 库
 
 // 创建 Express 应用
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;  // 使用动态端口
 
 // 设置 CORS 头，允许跨域访问
 app.use((req, res, next) => {
@@ -21,10 +21,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // 创建数据库连接
 const db = mysql.createConnection({
-  host: 'localhost', // 或者是你云数据库的地址
-  user: 'root', // 你的 MySQL 用户名
-  password: '123456', // 你的 MySQL 密码
-  database: 'team_sharing' // 数据库名称
+  host: process.env.DB_HOST, // 从环境变量中获取
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
 });
 
 // 连接到数据库
@@ -62,6 +62,11 @@ app.get('/list', (req, res) => {
     }
     res.send(results); // 返回查询到的组队信息
   });
+});
+
+// 处理根路径请求，返回欢迎信息
+app.get('/', (req, res) => {
+  res.send('Welcome to the Team Sharing Application!');
 });
 
 // 启动服务器
